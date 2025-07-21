@@ -10,7 +10,9 @@ I started by just creating a generic system administrator agent and giving it fu
 
 Then I was curious how well it could write code. I'm running all my models 
 locally, so I downloaded qwen2.5-coder, updated the model to support 32k of 
-context length, and after hardly any time at all, I was blown away.
+context length, and after hardly any time at all, I was blown away (with some constraints).
+
+![mandelbrot.png](mandelbrot.png)
 
 ## First pass
 
@@ -265,3 +267,12 @@ Creating file: main.c
 
 It determined it needed to install libcurses. Cool. It also generated a program
 that let's you zoom, or at least try to. It didn't work though. I committed that as the fifth commit (main.c is new).
+
+```
+git diff 1090a0e7...4e856fcf -- src/sandbox/main.c
+```
+
+Pasted the code to Claude, then saved those results. Claude decided to do more 
+than just fix the code, and also added colors and the ability to pan around. I 
+am still very impressed that Qwen2.5 running only a 7B parameter model was able 
+to do as much as it did, even if it wasn't perfect.

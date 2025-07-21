@@ -8,9 +8,18 @@ hack around a bit.
 
 I started by just creating a generic system administrator agent and giving it full access to a docker environment. That was pretty cool.
 
-Then I was curious how well it could write code. I'm running all my models 
-locally, so I downloaded qwen2.5-coder, updated the model to support 32k of 
-context length, and after hardly any time at all, I was blown away (with some constraints).
+Then I was curious how well it could write code. When I was in high school, 
+fractals fascinated me. I had my Dad drive me downtown to Powell's Technical 
+Books, and he bought me a book on fractals. I still have it today, beat up as 
+it is. I didn't understand the math at the time, and had to ask my calculus 
+teacher what some of the symbols meant, and she explained them enough that I 
+could then write code to implement them. It would take *days* for my i386 to 
+generate a single fractal. But I digress... I wanted to know if an agentic 
+coder could easily write a Mandelbrot fractal visualization.
+
+I'm running all my models locally, so I downloaded qwen2.5-coder, updated the 
+model to support 32k of context length, and after hardly any time at all, I was 
+blown away (with some constraints).
 
 ![mandelbrot.png](mandelbrot.png)
 

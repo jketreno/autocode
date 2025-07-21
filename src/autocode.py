@@ -21,11 +21,13 @@ coding_model = OpenAIChatCompletionsModel(
 )
 
 # configure the Phoenix tracer
-tracer_provider = register(
-    endpoint=f"{os.getenv('PHOENIX_COLLECTOR_ENDPOINT', 'http://localhost:4317')}/v1/traces",
-    project_name="AutoCode",  # Default is 'default'
-    auto_instrument=True,  # Auto-instrument your app based on installed dependencies
-)
+tracer_endpoint = os.getenv('PHOENIX_COLLECTOR_ENDPOINT', None)
+if tracer_endpoint:
+  tracer_provider = register(
+      endpoint=f"{tracer_endpoint}/v1/traces",
+      project_name="AutoCode",  # Default is 'default'
+      auto_instrument=True,  # Auto-instrument your app based on installed dependencies
+  )
 
 
 class BashCommandResult(BaseModel):

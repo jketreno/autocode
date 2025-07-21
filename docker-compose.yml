@@ -1,0 +1,13 @@
+services:
+  autocode:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: autocode
+    restart: "always"
+    env_file:
+      - .env
+    volumes:
+      - ./venv:/opt/python/venv:rw                # Live mount venv persisting
+      - ./src:/opt/python/src                     # Live mount for live edits...
+    

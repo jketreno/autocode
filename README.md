@@ -1,6 +1,16 @@
 # AutoCode: A Python-based code generation and execution tool
 
-The power of agentic coding... wow.
+The power of agentic coding... wow. I've been wanting to explore a bit more 
+with agentic agents. As part of another project I started several months ago, I 
+ended up writing a custom agent framework. I started taking Ed Donner's Agentic 
+AI course and after seeing how easy the OpenAI Agent SDK is to use, I wanted to 
+hack around a bit.
+
+I started by just creating a generic system administrator agent and giving it full access to a docker environment. That was pretty cool.
+
+Then I was curious how well it could write code. I'm running all my models 
+locally, so I downloaded qwen2.5-coder, updated the model to support 32k of 
+context length, and after hardly any time at all, I was blown away.
 
 ## First pass
 
@@ -238,3 +248,20 @@ Since there is no seed to pass into the system, the results change a lot each
 time you run it. Several times, the manager agent attempted to use system tools 
 to download pre-written Fractal programs. They never compiled, and it 
 eventually gave up. It was fun to watch it try though.
+
+
+# Can it be a full developer?
+
+Since the manager agent has the ability to run commands, I thought I'd see what happens if I give it some more constraints:
+
+```
+> write a C program to interactively explore the mandelbrot fractal. use ncurses.
+🤖 gcc mandelbrot.c -lncurses -o mandelbrot && ./mandelbrot
+stdout='' stderr='/usr/bin/ld: cannot find -lncurses: No such file or directory\ncollect2: error: ld returned 1 exit status\n' return_code=1 working_directory='/opt/python/src/sandbox' command='gcc mandelbrot.c -lncurses -o mandelbrot && ./mandelbrot' success=False
+Creating file: main.c
+🤖 sudo apt-get update && sudo apt-get install libncurses5-dev
+...
+```
+
+It determined it needed to install libcurses. Cool. It also generated a program
+that let's you zoom, or at least try to. It didn't work though. I committed that as the fifth commit (main.c is new).

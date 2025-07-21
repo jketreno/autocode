@@ -6,6 +6,7 @@ int is_in_mandelbrot(double real, double imag, int max_iters) {
     for (int i = 0; i < max_iters; ++i) {
         double z_re2 = z_re * z_re - z_im * z_im + real;
         z_im = 2.0 * z_re * z_im + imag;
+        z_re = z_re2;
         if (z_re2 + z_im * z_im > 4.0) return 0;
     }
     return 1;

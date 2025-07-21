@@ -6,20 +6,6 @@ First pass:
 
 ````
 # python ../autocode.py 
-🔭 OpenTelemetry Tracing Details 🔭
-|  Phoenix Project: AutoCode
-|  Span Processor: SimpleSpanProcessor
-|  Collector Endpoint: http://battle-linux.ketrenos.com:6006/v1/traces
-|  Transport: HTTP + protobuf
-|  Transport Headers: {}
-|  
-|  Using a default SpanProcessor. `add_span_processor` will overwrite this default.
-|  
-|  ⚠️ WARNING: It is strongly advised to use a BatchSpanProcessor in production environments.
-|  
-|  `register` has set this TracerProvider as the global OpenTelemetry default.
-|  To disable this behavior, call `register` with `set_global_tracer_provider=False`.
-
 > write a small C program that outputs an 80x25 grid of the mandelbrot fractal in ascii.
 🤖 cat > mandelbrot.c << 'EOF'
 #include <stdio.h>
@@ -94,3 +80,82 @@ back in the 90s (a fractal like this would have taken a day or longer to
 generate i386,) it looked decent, but I wasn't sure.
 
 First commit.
+
+So I just copied the generated mandelbrot.c program into claude.ai and hit 
+ENTER. Its output:
+
+````
+This is a C program that generates ASCII art of the Mandelbrot set! It's a classic example of fractal visualization.
+Here's how it works:
+
+**The Mandelbrot Function:**
+The is_in_mandelbrot function implements the core Mandelbrot iteration formula. For each complex number c = real + imag*i, it repeatedly applies the formula z = z² + c starting with z = 0. If the magnitude of z exceeds 2 (checked as |z|² > 4), the point "escapes" and isn't in the Mandelbrot set.
+
+**The Main Visualization:**
+The program creates an 80×25 character grid, mapping each position to a complex number in the range [-2, 2] × [-1.5, 1.5]. Points in the Mandelbrot set are displayed as '@' characters, while points outside are shown as '.'.
+
+**Bug Alert:**
+There's a small issue in your iteration logic:
+
+```c
+cdouble z_re2 = z_re * z_re - z_im * z_im + real;
+z_im = 2.0 * z_re * z_im + imag;
+if (z_re2 + z_im * z_im > 4.0) return 0;
+```
+
+The problem is that z_re never gets updated to z_re2. You should add:
+
+```c
+cz_re = z_re2;
+```
+
+Or restructure it like this:
+
+```c
+cdouble new_re = z_re * z_re - z_im * z_im + real;
+double new_im = 2.0 * z_re * z_im + imag;
+z_re = new_re;
+z_im = new_im;
+if (z_re * z_re + z_im * z_im > 4.0) return 0;
+```
+
+When you run the corrected version, you'll see the characteristic bulbous shape of the Mandelbrot set rendered in ASCII art!
+````
+
+Prior to inserting the suggested line change, I committed the code.
+
+I then inserted the suggested line change, recompiled and wha-la:
+
+```
+$ gcc -o mandelbrot mandelbrot.c
+$ ./mandelbrot 
+................................................................................
+................................................................................
+................................................................................
+................................................................................
+................................................................................
+.....................................@..........................................
+...................................@@@@.........................................
+..................................@@@@@@@.@.....................................
+..............................@@@@@@@@@@@@@@@@..................................
+...........................@@@@@@@@@@@@@@@@@@@@.................................
+.................@.@@.....@@@@@@@@@@@@@@@@@@@@@.................................
+................@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@.................................
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@...................................
+................@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@.................................
+.................@.@@.....@@@@@@@@@@@@@@@@@@@@@.................................
+...........................@@@@@@@@@@@@@@@@@@@@.................................
+..............................@@@@@@@@@@@@@@@@..................................
+..................................@@@@@@@.@.....................................
+...................................@@@@.........................................
+.....................................@..........................................
+................................................................................
+................................................................................
+................................................................................
+................................................................................
+................................................................................
+```
+
+WOW!
+
+Second commit.

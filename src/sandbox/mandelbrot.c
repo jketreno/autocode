@@ -1,27 +1,47 @@
 #include <stdio.h>
-#include <complex.h>
 
-int is_in_mandelbrot(double real, double imag, int max_iters) {
-    double z_re = 0.0, z_im = 0.0;
-    for (int i = 0; i < max_iters; ++i) {
-        double z_re2 = z_re * z_re - z_im * z_im + real;
-        z_im = 2.0 * z_re * z_im + imag;
-        z_re = z_re2;
-        if (z_re2 + z_im * z_im > 4.0) return 0;
+#define WIDTH 80
+#define HEIGHT 25
+#define MAX_ITER 1000
+
+typedef struct {
+    double x, y;
+} Complex;
+
+Complex add(Complex a, Complex b) {
+    return (Complex){a.x + b.x, a.y + b.y};
+}
+
+Complex multiply(Complex a, Complex b) {
+    return (Complex){a.x * b.x - a.y * b.y, a.x * b.y + a.y * b.x};
+}
+
+int is_in_mandelbrot(Complex z, int max_iter) {
+    Complex c = {0.0, 0.0};
+    for (int iter = 0; iter < max_iter; iter++) {
+        if ((z.x * z.x + z.y * z.y) > 2.0) {
+            return iter;
+        }
+        z = add(multiply(z, z), c);
     }
-    return 1;
+    return max_iter;
 }
 
 int main() {
-    int width = 80, height = 25;
-    for(int y = 0; y < height; ++y) {
-        for(int x = 0; x < width; ++x) {
-            double real = -2.0 + (4.0 * (double)x / (width-1));
-            double imag = -1.5 + (3.0 * (double)y / (height-1));
-            if(is_in_mandelbrot(real, imag, 100)) putchar('@');
-            else putchar('.');
+    for (int y = HEIGHT - 1; y >= 0; y--) {
+        for (int x = 0; x < WIDTH; x++) {
+            double zx = -2.5 + x * 3.5 / WIDTH;
+            double zy = -1.25 + y * 2.5 / HEIGHT;
+            Complex c = {zx, zy};
+            int iter = is_in_mandelbrot(c, MAX_ITER);
+            if (iter == MAX_ITER) {
+                putchar(' ');
+            } else {
+                putchar("0123456789abcdef"[iter % 16]);
+            }
         }
         putchar('\n');
     }
+
     return 0;
 }

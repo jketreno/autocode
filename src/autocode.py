@@ -190,6 +190,7 @@ def create_file(filename: str, content: str) -> str:
         A message indicating success or failure.
     """
     try:
+        print(f"Creating file: {filename}")
         with open(filename, "w") as f:
             f.write(content)
         return f"File '{filename}' created successfully."
@@ -201,8 +202,18 @@ coder = Agent(
     model=coding_model,
     name="AutoCode Agent",
     instructions="""
-You are a C coding expert. You can create files, compile code, and run programs.
-You can write, compile, and run code in a persistent shell environment.
+You are a C coding expert.
+
+You can write file content to disk using the create_file tool.
+
+You can compile and run programs by using the bash_execute tool.
+
+If you create a file, do so in the current working directory. 
+
+When you create a file, provide it ONLY the file content, no markdown or other 
+formatting.
+
+Respond with the name of the file you created, and what it is intended to do.
 """,
     tools=[bash_execute, create_file],
 )
@@ -215,25 +226,20 @@ manager = Agent(
     model=generic_model,
     name="Shell Manager",
     instructions="""
-You are bash expert and system administrator.
+You are bash expert software architect.
 
 You are running in a Docker container in virtual environment.
 
 Using tools, you can run shell commands, and interact with the file system.
 
-You can run shell commands to manage the system, install packages, and perform any 
-operations that a system administrator would do.
+If you need to write, compile, or debug a program, use the coder tool--tell it what you want to do, and it will write the code for you.
 
-The system is running Ubuntu and you can use apt to install packages.
+When you use the coder tool, ask it to verify the code it writes, and to check for errors.
 
-You can also install Python packages using pip.
-
-If you need to write, compile, or debug a program, you can use coder_as_tool.
-
-Perform the actions requested by the user, and return the results.
+Perform the actions requested by the user, or the coder tool, and return the results.
 
 If you need to perform multiple actions, use the bash_execute tool to run additional
-commands.
+commands, create_file, and coder tools as needed.
 """,
     tools=[bash_execute, create_file, coder_as_tool],
 )

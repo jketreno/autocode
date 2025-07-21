@@ -92,18 +92,9 @@ First commit.
 ## Debugging
 
 I copied the generated mandelbrot.c program into claude.ai and hit 
-ENTER (no prompt beyond the source code). Its output:
+ENTER (no prompt beyond the source code). It immediately identified the problem:
 
-````
-This is a C program that generates ASCII art of the Mandelbrot set! It's a classic example of fractal visualization.
-Here's how it works:
-
-**The Mandelbrot Function:**
-The is_in_mandelbrot function implements the core Mandelbrot iteration formula. For each complex number c = real + imag*i, it repeatedly applies the formula z = z² + c starting with z = 0. If the magnitude of z exceeds 2 (checked as |z|² > 4), the point "escapes" and isn't in the Mandelbrot set.
-
-**The Main Visualization:**
-The program creates an 80×25 character grid, mapping each position to a complex number in the range [-2, 2] × [-1.5, 1.5]. Points in the Mandelbrot set are displayed as '@' characters, while points outside are shown as '.'.
-
+---
 **Bug Alert:**
 There's a small issue in your iteration logic:
 
@@ -118,19 +109,7 @@ The problem is that z_re never gets updated to z_re2. You should add:
 ```c
 cz_re = z_re2;
 ```
-
-Or restructure it like this:
-
-```c
-cdouble new_re = z_re * z_re - z_im * z_im + real;
-double new_im = 2.0 * z_re * z_im + imag;
-z_re = new_re;
-z_im = new_im;
-if (z_re * z_re + z_im * z_im > 4.0) return 0;
-```
-
-When you run the corrected version, you'll see the characteristic bulbous shape of the Mandelbrot set rendered in ASCII art!
-````
+---
 
 Prior to inserting the suggested line change, I committed the code.
 
@@ -170,12 +149,12 @@ WOW!
 
 Second commit.
 
+## Agent instruction edits
+
 I didn't like that it wasn't able to succeed autonomously, so I tweaked the 
-prompts a bit, and ran again. This time it generated:
+prompts a bit, and ran again.
 
-## Prompt edits
-
-I ran with the same prompt to the autocode.py, and this is the result when running the compiled code:
+I ran with the same instruction to autocode.py, and this is the result when running what it generated:
 
 ```
 00000000000000000000000000000000000000011111111111122222222222222111111111110000
@@ -205,9 +184,7 @@ I ran with the same prompt to the autocode.py, and this is the result when runni
 00000000000000000000000000000000000000000001111111111111111111111111111110000000
 ```
 
-That's not right.
-
-Third commit.
+Not quite right, but fun that it took a completely different approahc. Third commit.
 
 ## Debugging
 
@@ -244,7 +221,15 @@ $ ./mandelbrot
 11111111111111111111112222222222222333333333333333333333332222222222222222222222
 ```
 
+You can see the diff that Claude did via:
+
+```
+git diff 88cbbd33...d01af2e9 -- src/sandbox/mandelbrot.c
+```
+
 Fun stuff. While qwen2.5-coder:7b is good, but Claude really crushes it...
+
+Fourth commit.
 
 However, the fact that it was almost trivial to write this was *very* 
 impressive.

@@ -2,11 +2,19 @@
 
 The power of agentic coding... wow.
 
-First pass:
+## First pass
 
-````
+Prompt:
+```
+docker compose run autogen shell
+# mkdir -p src/sandbox
+# cd src/sandbox
 # python ../autocode.py 
 > write a small C program that outputs an 80x25 grid of the mandelbrot fractal in ascii.
+```
+
+Output:
+````
 🤖 cat > mandelbrot.c << 'EOF'
 #include <stdio.h>
 #include <complex.h>
@@ -81,8 +89,10 @@ generate i386,) it looked decent, but I wasn't sure.
 
 First commit.
 
-So I just copied the generated mandelbrot.c program into claude.ai and hit 
-ENTER. Its output:
+## Debugging
+
+I copied the generated mandelbrot.c program into claude.ai and hit 
+ENTER (no prompt beyond the source code). Its output:
 
 ````
 This is a C program that generates ASCII art of the Mandelbrot set! It's a classic example of fractal visualization.
@@ -127,8 +137,8 @@ Prior to inserting the suggested line change, I committed the code.
 I then inserted the suggested line change, recompiled and wha-la:
 
 ```
-$ gcc -o mandelbrot mandelbrot.c
-$ ./mandelbrot 
+# gcc -o mandelbrot mandelbrot.c
+# ./mandelbrot 
 ................................................................................
 ................................................................................
 ................................................................................
@@ -163,8 +173,11 @@ Second commit.
 I didn't like that it wasn't able to succeed autonomously, so I tweaked the 
 prompts a bit, and ran again. This time it generated:
 
+## Prompt edits
+
+I ran with the same prompt to the autocode.py, and this is the result when running the compiled code:
+
 ```
-./mandelbrot
 00000000000000000000000000000000000000011111111111122222222222222111111111110000
 00000000000000000000000000000000000011111111122222233333333333332222221111111110
 00000000000000000000000000000000001111111222233345d              644332222111111
@@ -192,4 +205,51 @@ prompts a bit, and ran again. This time it generated:
 00000000000000000000000000000000000000000001111111111111111111111111111110000000
 ```
 
+That's not right.
+
 Third commit.
+
+## Debugging
+
+Pasted the code to Claude, it caught several errors, and rewrote the file.
+
+I applied Claude's fixes and wha-la:
+
+```
+$ ./mandelbrot 
+11111111111111111111222222222333333333333333333334444554443333322222222222222222
+11111111111111111112222223333333333333333333444444556ca6654444433332222222222222
+111111111111111112222233333333333333333344444444555678b0a76544444333332222222222
+11111111111111112222333333333333333333444444445556710cd 2d8655544443333332222222
+1111111111111112223333333333333333344444444566667788     99776655544333333322222
+1111111111111122333333333333333344444455567af0caa89c75271b3e7b888c85443333332222
+11111111111111233333333333333444555555566689f                 f  6a6544333333222
+11111111111112333333333334456666555566677bc 9                   2c87554433333332
+1111111111111333334444445566da998bb98888acf                        5854433333332
+11111111111123344444455555678a8 8    5cbda                        1b654443333333
+1111111111113444444555567b99c6         c6                         77554443333333
+111111111111556678776889aea 7           f                        676554443333333
+111111111111556678776889aea 7           f                        676554443333333
+1111111111113444444555567b99c6         c6                         77554443333333
+11111111111123344444455555678a8 8    5cbda                        1b654443333333
+1111111111111333334444445566da998bb98888acf                        5854433333332
+11111111111112333333333334456666555566677bc 9                   2c87554433333332
+11111111111111233333333333333444555555566689f                 f  6a6544333333222
+1111111111111122333333333333333344444455567af0caa89c75271b3e7b888c85443333332222
+1111111111111112223333333333333333344444444566667788     99776655544333333322222
+11111111111111112222333333333333333333444444445556710cd 2d8655544443333332222222
+111111111111111112222233333333333333333344444444555678b0a76544444333332222222222
+11111111111111111112222223333333333333333333444444556ca6654444433332222222222222
+11111111111111111111222222222333333333333333333334444554443333322222222222222222
+11111111111111111111112222222222222333333333333333333333332222222222222222222222
+```
+
+Fun stuff. While qwen2.5-coder:7b is good, but Claude really crushes it...
+
+However, the fact that it was almost trivial to write this was *very* 
+impressive.
+
+Since there is no seed to pass into the system, the results change a lot each 
+time you run it. Several times, the manager agent attempted to use system tools 
+to download pre-written Fractal programs. They never compiled, and it 
+eventually gave up. It was fun to watch it try though.

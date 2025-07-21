@@ -285,3 +285,16 @@ Pasted the code to Claude, then saved those results. Claude decided to do more
 than just fix the code, and also added colors and the ability to pan around. I 
 am still very impressed that Qwen2.5 running only a 7B parameter model was able 
 to do as much as it did, even if it wasn't perfect.
+
+# My takeaway?
+
+AI, and specifically AI Agents, are incredibly powerful. Even running smaller 
+models locally can do a lot, and they pale in comparison to what the frontier 
+models of today can do -- let alone the models of tomorrow.
+
+An agent as a software architect, and minions of other specialized agents for 
+testing, developing, optimizing, packaging, and managing support forums. Pair 
+lower cost local agents with some heavy hitter pay-models and anyone can create 
+software.
+
+This is really feeling like a Star Trek moment.
